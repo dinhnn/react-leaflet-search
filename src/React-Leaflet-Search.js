@@ -39,34 +39,15 @@ export default class ReactLeafletSearch extends MapControl {
         return new ReactLeafletSearch(props);
     }
 
-    latLngHandler(latLng, info) {
-        this.SearchInfo = {info, latLng};
-        const popUpStructure = (
-            <div>
-                <p>{ Array.isArray(info) ? info.toString() : info }</p>
-                <div className='leaflet-search-popup'></div>
-                <div>{`latitude: ${latLng[0]}`}</div>
-                <div>{`longitude: ${latLng[1]}`}</div>
-            </div>
-        )
-        this.goToLatLng(latLng, popUpStructure);
-    }
-
     removeMarkerHandler() { this.setState({search: false}); }
 
-    goToLatLng(latLng, info) {
-        this.setState({ search: latLng, info: info }, () => {
-            this.flyTo();
-        });
-    }
-    flyTo() { this.map.flyTo([...this.state.search], this.props.zoom); }
 
     componentDidMount() {
         super.componentDidMount();
         ReactDOM.render(<InputBox
             {...this.props}
             map={this.map}
-            latLngHandler={this.latLngHandler.bind(this)}
+            onResultSelected={(item)=>this.props.onResultSelected(item)}
             removeMarker={this.removeMarkerHandler.bind(this)} />, this.div);
     }
 

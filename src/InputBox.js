@@ -72,9 +72,6 @@ export default class InputBox extends React.Component {
             this.hideInfo();
             this.state.closeButton && this.setState({ closeButton: false });
         }
-        if (!this.input.value.startsWith(":")) {
-            // console.log(this.input.value);
-        }
     }
 
     openSearch() {
@@ -91,24 +88,9 @@ export default class InputBox extends React.Component {
     }
 
     beautifyValue(value) {
-        // console.log(value);
-        if (value.startsWith(":")) {
-            const latLng = value
-                .slice(1)
-                .split(',')
-                .filter(e => !isNaN(Number(e)))
-                .map(e => Number(e ? e : 0));
-            if (latLng.length <= 1) {
-                this.showInfo('Please enter a valid lat, lng');
-            } else {
-                this.hideInfo();
-                this.props.latLngHandler(latLng, latLng);
-            }
-        } else {
-            if (this.input.value.length < 3) {
-                const response = 'Please enter a valid lat,lng starting with ":" or minimum 3 character to search';
-                this.showInfo(response);
-            }
+        if (this.input.value.length < 3) {
+            const response = 'Please enter minimum 3 character to search';
+            this.showInfo(response);
         }
     }
 
@@ -142,7 +124,7 @@ export default class InputBox extends React.Component {
 
     listItemClick(itemData, totalInfo, activeIndex, event) {
         this.showInfo(totalInfo, activeIndex);
-        this.props.latLngHandler([Number(itemData.latitude), Number(itemData.longitude)], itemData.name);
+        this.props.onResultSelected(itemData);
         if (this.props.closeResultsOnClick) {
             this.hideInfo();
         }
@@ -158,17 +140,6 @@ export default class InputBox extends React.Component {
     componentDidMount() {
         this.setMaxHeight();
         this.provider = this.props.provider;
-        
-        if (this.props.search &&
-            Array.isArray(this.props.search) &&
-            !isNaN(Number(this.props.search[0])) &&
-            !isNaN(Number(this.props.search[1]))
-        ) {
-            this.input.value = `:${this.props.search.toString()}`;
-            this.openSearch();
-            this.syncInput(); // to show close button
-            this.props.latLngHandler([Number(this.props.search[0]), Number(this.props.search[1])], this.props.search.toString())
-        }
     }
 
     render() {
