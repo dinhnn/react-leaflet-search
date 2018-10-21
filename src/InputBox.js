@@ -157,12 +157,8 @@ export default class InputBox extends React.Component {
 
     componentDidMount() {
         this.setMaxHeight();
-        if (this.props.provider && Object.keys(Providers).includes(this.props.provider)) {
-            const Provider = Providers[this.props.provider];
-            this.provider = new Provider(Object.assign({providerKey: this.props.providerKey, searchBounds: this.props.searchBounds}, this.props.providerOptions));
-        } else {
-            throw new Error(`You set the provider prop to ${this.props.provider} but that isn't recognised. You can choose from ${Object.keys(Providers).join(", ")}`)
-        }
+        this.provider = this.props.provider;
+        
         if (this.props.search &&
             Array.isArray(this.props.search) &&
             !isNaN(Number(this.props.search[0])) &&
